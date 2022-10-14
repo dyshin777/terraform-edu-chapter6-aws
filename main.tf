@@ -16,14 +16,14 @@ terraform {
 }
 
 provider "aws" {
-  region = var.region
+  region  = var.region
   default_tags {
-    tags = {
-      Project = "Coffee-Mug-Cake"
-      Owner   = "jerry & tom"
-    }
-  }
+   tags = {
+     Project = "Coffee-Mug-Cake"
+   }
+ }
 }
+
 
 resource "aws_vpc" "hashicat" {
   cidr_block           = var.address_space
