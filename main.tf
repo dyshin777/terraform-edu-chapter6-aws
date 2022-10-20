@@ -1,10 +1,10 @@
 terraform {
   cloud {
-    organization = "dyshin777_personal"         # 생성한 ORG 이름 지정
-    hostname     = "app.terraform.io"      # default
+    organization = "dyshin777_personal" # 생성한 ORG 이름 지정
+    hostname     = "app.terraform.io"   # default
 
     workspaces {
-      name = "terraform-edu-part1-assessment"  # 없으면 생성됨
+      name = "terraform-edu-part1-assessment" # 없으면 생성됨
     }
   }
   required_providers {
@@ -16,13 +16,13 @@ terraform {
 }
 
 provider "aws" {
-  region  = var.region
+  region = var.region
   default_tags {
-   tags = {
-     Project = "Coffee-Mug-Cake"
-     Owner   = "tom"
-   }
- }
+    tags = {
+      Project = "workshop"
+      Owner   = "tom"
+    }
+  }
 }
 
 
@@ -134,7 +134,7 @@ data "aws_ami" "ubuntu" {
 #}
 
 resource "aws_instance" "hashicat" {
-  count = length(var.placeholder)
+  count                       = length(var.placeholder)
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
   key_name                    = aws_key_pair.hashicat.key_name
@@ -149,7 +149,7 @@ resource "aws_instance" "hashicat" {
 
 resource "null_resource" "configure-cat-app" {
   count = length(var.placeholder)
-#  depends_on = [aws_eip_association.hashicat]
+  #  depends_on = [aws_eip_association.hashicat]
   depends_on = [aws_instance.hashicat]
 
   // triggers = {
@@ -164,8 +164,8 @@ resource "null_resource" "configure-cat-app" {
       type        = "ssh"
       user        = "ubuntu"
       private_key = tls_private_key.hashicat.private_key_pem
-#      host        = aws_eip.hashicat.public_ip
-      host        = aws_instance.hashicat.public_ip
+      #      host        = aws_eip.hashicat.public_ip
+      host = aws_instance.hashicat.*.public_ip
     }
   }
 
@@ -187,7 +187,7 @@ resource "null_resource" "configure-cat-app" {
       type        = "ssh"
       user        = "ubuntu"
       private_key = tls_private_key.hashicat.private_key_pem
-      host        = aws_eip.hashicat.public_ip
+      host        = aws_instance.hashicat.*.public_ip
     }
   }
 }
